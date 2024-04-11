@@ -1,0 +1,45 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Single-Instance web-server
+Parameters:
+  Subnet:
+    Type: AWS::EC2::Subnet::Id
+  IamInstanceProfile:
+    Type: String
+    Description: Name of the role
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  InstanceType:
+    Type: string
+    Default: t3.micro
+    AllowedValues:
+    - t2.nano
+    - t2.micro
+    - t2.small
+    - t3.nano
+    - t3.micro
+    - t3.small
+    - m1.medium
+
+Resources:
+  aaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: aa-bucket-${AWS::AccountId}
+
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo amazon-linux-extras install nginx1 -y
+          sudo service nginx start
+          aws s3 cp index.html s3//aa-bucket-${AWS::AccountId}/index.html
+      ImageId: ami- 0889a44b331db0194
+      InstanceType:
+        Ref: InstanceType
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      SubnetId:
+        Ref: Subnet
