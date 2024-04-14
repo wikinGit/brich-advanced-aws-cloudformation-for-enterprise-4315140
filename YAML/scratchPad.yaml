@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create EC2 instance with key pair, security group and output instance details
+Parameters:
+  MyS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: '{{resolve:ssm:S3AccessControl:2}}'
+  MyIAMUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: 'MyUserName'
+      LoginProfile:
+        Password: '{{resolve:ssm-secure:IAMUserPassword:10}}'
+  MyRDSInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      DBName: MyRDSInstance
+      AllocatedStorage: '20'
+      DBInstanceClass: db.t2.micro
+      Engine: mysql
+      MasterUsername: '{{resolve:secretsmanager:MyRDSSecret:SecretString:username}}'
+      MasterUserPassword: '{{resolve:secretsmanager:MyRDSSecret:SecretString:password}}'
+Rules:
+  Rule01:
+    RuleCondition:
+      rule-specific intrinsic function: Value01
+    Assertions:
+      - Assert:
+          rule-specific intrinsic function: Value02
+        AssertDescription: Information about this assert
+      - Assert:
+          rule-specific intrinsic function: Value03
+        AssertDescription: Information about this assert
+  Rule02:
+    Assertions:
+      - Assert:
+          rule-specific intrinsic function: Value04
+        AssertDescription: Information about this assert
+
+KeyName:
+Description: Name of an existing EC2 key pair to launch the instance
+Type: 'AWS::EC2::KeyPair::KeyName'
+
+Resources:
+EC2Instance:
+Type: 'AWS::EC2::Instance'
+Properties:
+ImageId: ami-1234567890abcdef0
+InstanceType: t2.micro
+KeyName: !Ref KeyName
+SecurityGroups:
+- sg-1234567890abcdef0
+Outputs:
+InstanceId:
+Value: !Ref EC2Instance
+Description: ID of the EC2 instance
+AvailabilityZone:
+Value: !GetAtt EC2Instance.AvailabilityZone
+Description: Availability Zone of the instance
+
+Type: AWS::CloudFormation::Authentication
+String:
+  accessKeyId: String
+  buckets:
+    - String
+  password: String
+  secretKey: String
+  type: String
+  uris:
+    - String
+  username: String
+  roleName: String
+
+  Resources: 
+  MyInstance: 
+    Type: AWS::EC2::Instance
+    Metadata: 
+      AWS::CloudFormation::Init: 
+        config: 
+          packages: 
+            :
+          groups: 
+            :
+          users: 
+            :
+          sources: 
+            :
+          files: 
+            :
+          commands: 
+            :
+          services: 
+            :
+    Properties: 
+      :
+
+Metadata: 
+  AWS::CloudFormation::Interface: 
+    ParameterGroups: 
+      - 
+        Label: 
+          default: "Network Configuration"
+        Parameters: 
+          - VPCID
+          - SubnetId
+          - SecurityGroupID
+      - 
+        Label: 
+          default: "Amazon EC2 Configuration"
+        Parameters: 
+          - InstanceType
+          - KeyName
+    ParameterLabels: 
+      VPCID: 
+        default: "Which VPC should this be deployed to?"
