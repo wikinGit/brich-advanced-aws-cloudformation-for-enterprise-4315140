@@ -43,4 +43,4 @@ $ aws cloudformation delete-stack --stack-name myteststack
 
 aws cloudformation create-stack \
   --stack-name aaEC2 \
-  --template-body file:///mnt/c/Users/waz/.aws/YAML/single-vpc-ec2-cfn.yaml
+  --template-body file:///mnt/c/Users/waz/c/Users/waz/.aws/YAML
