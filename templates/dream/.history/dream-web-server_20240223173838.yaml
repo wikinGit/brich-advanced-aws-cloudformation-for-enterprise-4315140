@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Decscription: 'AWS CloudFormation Sample Template for creating a web server and a database instance. **WARNING** This template creates an Amazon EC2 instance and an Amazon RDS DB instance. You will be billed for the AWS resources used if you create a stack from this template.'
+Resources:
+  DreamEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId:  ami-02eec49345a878486  # Replace with the ID of the AWS Linux AMI
+      KeyName: dd-keypair-18022024
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd mariadb-server php
+          systemctl start httpd
+          systemctl enable httpd
+          systemctl start mariadb
+          systemctl enable mariadb
+          echo "<?php phpinfo(); ?>" > /var/www/html/index.php
+      SecurityGroupIds:
+         sg-0a4866115a70d7ab3 # Replace with the ID of your security group
+      SubnetId:  subnet-00539bef2add45376 # Replace with the ID of your subnet
+
+  DreamS3Bucket:
+    Type: AWS::S3::Bucket
+
+  DreamDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: mariadb
+      DBInstanceIdentifier: dream-bucket-01
+      AllocatedStorage: 20
+      DBInstanceClass: db.t2.micro
+      EngineVersion: 10.4.21
+      MasterUsername: admin
+      MasterUserPassword: Hello@123
+      VPCSecurityGroups:
+        - Ref: dDream-sg
+        - id: sg-0be8db1f02760445e
+
+  DreamDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound access to the MariaDB database
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0

@@ -1,0 +1,105 @@
+ dd-EC2-01 
+ i-0fdcb15c5a3c08e4d
+ 172.31.42.80
+ ip-172-31-42-80.ap-southeast-2.compute.internal
+ vpc-0bed63c7e20497712
+ subnet-00539bef2add45376
+ ami-02eec49345a878486 - al2023-ami-2023.3.20240205.2-kernel-6.1-x86_64
+ dd-keypair-18022024 - ID: 221603655552
+ Reservation: r-0148e715232f8f7f8
+ sg-0a4866115a70d7ab3
+ vol-063bc7c53fa7d1d9c
+ arn:aws:sso:::instance/ssoins-8259787f8653c6d2
+ Organization ID: o-s9vrjkx6bk
+ https://d-9767415cca.awsapps.com/start
+arn:aws:iam::221603655552:group/WazAdminZ
+dream-vpg-01 - Amazon ASN: 64512
+dream-vpc-transit-gate - Amazon ASN: 64512
+ dreambucket
+ arn:aws:iam::221603655552:policy/dreambucket-s3-policy
+ https://s3.ap-southeast-2.amazonaws.com/cloudformation-templates-ap-southeast-2/WordPress_Single_Instance.template
+
+ aws cloudformation create-stack-set \
+  --stack-set-name my-awsconfig-stackset \
+  --template-url https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/EnableAWSConfig.yml
+
+  https://s3.ap-southeast-2.amazonaws.com/
+
+subnet-05b9869bba8ef6e44 / dDream-subnet-public1-ap-southeast-2a
+subnet-065d570dc294c1228 / dDream-subnet-public2-ap-southeast-2b
+subnet-0a13d4cd10b6bac08 / dDream-subnet-private2-ap-southeast-2b
+subnet-0125f781aaa7a48eb / dDream-subnet-private1-ap-southeast-2a
+
+arn:aws:s3:::dream-bucket-01
+s3://dream-bucket-01/wordpress-6.4.3.zip
+https://dream-bucket-02.s3.ap-southeast-2.amazonaws.com/CloudWatch-logs/
+Private IP: 101.183.151.88/32
+eipalloc-096d22610a0692a5a
+arn:aws:s3:ap-southeast-2:221603655552:access-grants/default
+arn:aws:sso::221603655552:application/ssoins-8259787f8653c6d2/apl-e5796a2e6ab5c01a
+arn:aws:s3:ap-southeast-2:221603655552:access-grants/default/location/34b5ee06-308c-4afc-a2d2-f675f0215a58
+arn:aws:ram:ap-southeast-2:221603655552:permission/dream-s3-access-grant
+
+----
+The following example command creates an access point named example-ap for the bucket DOC-EXAMPLE-BUCKET in the account 111122223333. To create the access point, you send a request to Amazon S3 that specifies the following:
+
+    The access point name. For information about naming rules, see Rules for naming Amazon S3 access points.
+
+    The name of the bucket that you want to associate the access point with.
+
+    The account ID for the AWS account that owns the bucket.
+
+aws s3control create-access-point --name example-ap --account-id 111122223333 --bucket DOC-EXAMPLE-BUCKET
+
+When you're creating an access point by using a bucket in a different AWS account, include the --bucket-account-id parameter. The following example command creates an access point in the AWS account 111122223333, using the bucket DOC-EXAMPLE-BUCKET2, which is in the AWS account 444455556666.
+
+aws s3control create-access-point --name example-ap --account-id 111122223333 --bucket DOC-EXAMPLE-BUCKET --bucket-account-id 444455556666
+-----
+Allow Restricted Access to s3 bucket
+aws s3control create-access-point --name example-vpc-ap --account-id 123456789012 --bucket example-bucket --vpc-configuration VpcId=vpc-1a2b3c
+aws s3control get-access-point --name example-vpc-ap --account-id 123456789012
+--
+{
+    "Name": "example-vpc-ap",
+    "Bucket": "example-bucket",
+    "NetworkOrigin": "VPC",
+    "VpcConfiguration": {
+        "VpcId": "vpc-1a2b3c"
+    },
+    "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+    },
+    "CreationDate": "2019-11-27T00:00:00Z"
+}
+--
+-----
+Allow Public Access to s3 bucket
+aws s3control create-access-point --name example-ap --account-id 123456789012 --bucket example-bucket --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=true,RestrictPublicBuckets=true
+aws s3control get-access-point --name example-ap --account-id 123456789012
+--
+{
+    "Name": "example-ap",
+    "Bucket": "example-bucket",
+    "NetworkOrigin": "Internet",
+    "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": false,
+        "IgnorePublicAcls": false,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+    },
+    "CreationDate": "2019-11-27T00:00:00Z"
+}
+--
+-----
+#!/bin/bash
+#User data for new EC2 instances
+#install httpd (Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World! This is $(hostname-f)</h1>">
+/var/www/html/index.html

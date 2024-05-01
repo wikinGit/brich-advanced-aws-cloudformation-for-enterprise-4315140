@@ -1,0 +1,53 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Basic EC2 instance and S3 bucket for MariaDB database
+Parameters:
+  KeyName: dd-keypair-18022024
+    Type: String
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair.
+Resources:
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - Ref: sg-0be8db1f02760445e
+      KeyName: !Ref dd-keypair-18022024
+      ImageId: ami-02eec49345a878486 # Amazon Linux 2 AMI in ap-southeast-2 region
+  WebServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH and HTTP access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+  MariaDBBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref dream-bucket-01  # Use the value of the dreambucket parameter
+      AccessControl: Private
+      Tags:
+        - Key: Name
+          Value: !Ref dream-bucket-01
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value: !Ref EC2Instance
+    Export:
+      Name: EC2InstanceId
+  InstancePublicIp:
+    Description: Public IP address of the newly created EC2 instance
+    Value: !GetAtt EC2Instance.PublicIp
+    Export:
+      Name: EC2InstancePublicIp
+  MariaDBBucketName:
+    Description: Name of the S3 bucket for MariaDB database
+    Value: !Ref MariaDBBucket
+    Export:
+    Name: MariaDBBucketName

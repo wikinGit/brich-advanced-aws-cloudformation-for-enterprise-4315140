@@ -1,0 +1,46 @@
+#The following example creates the myteststack stack:
+$ aws cloudformation create-stack \
+  --stack-name myteststack \
+  --template-body file:///home/testuser/mytemplate.json \
+  --parameters ParameterKey=Parm1,ParameterValue=test1 ParameterKey=Parm2,ParameterValue=test2
+#The following example creates the myteststack stack in an AWS Systems Manager document:
+$ aws cloudformation create-stack \
+ --stack-name myteststack \
+ --template-url "ssm-doc://arn:aws:ssm:us-east-1:123456789012:document/documentName"
+#The following example shows a summary of all stacks that have a status of CREATE_COMPLETE.
+$ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
+#The following example shows summary information for the myteststack stack.
+$ aws cloudformation describe-stacks --stack-name myteststack
+#The following example creates a stack with the name myteststack using the sampletemplate.json template file:
+$ aws cloudformation create-stack \
+    --stack-name myteststack \
+    --template-body file:///home/local/test/sampletemplate.json
+#The following example describes the myteststack stack events:
+$ aws cloudformation describe-stack-events --stack-name myteststack
+#The following example shows the resources for the myteststack stack:
+$ aws cloudformation list-stack-resources --stack-name myteststack
+#The following example shows the template for the myteststack stack.
+$ aws cloudformation get-template --stack-name myteststack
+#The following example passes the --template-url parameter, to validate a template in a remote location:
+$ aws cloudformation validate-template --template-url https://s3.amazonaws.com/cloudformation-templates-us-east-1/S3_Bucket.template
+#he following example passes the --template-body parameter, to validate a template locally.
+$ aws cloudformation validate-template --template-body file:///home/local/test/sampletemplate.json
+#The following command creates a .zip file containing the function's source code folder, and then uploads the .zip file to the root folder of the my-bucket bucket.
+# Package command
+$ aws cloudformation package \
+    --template /path_to_template/template.json \
+    --s3-bucket mybucket \
+    --output-template-file packaged-template.json \
+    --use-json
+#The following command creates a new stack by using the my-template.json template.
+$ aws cloudformation deploy \
+  --template /path_to_template/my-template.json \
+  --stack-name my-new-stack \
+  --parameter-overrides Key1=Value1 Key2=Value2 \
+#The following example deletes the myteststack stack:
+$ aws cloudformation delete-stack --stack-name myteststack
+---------------------------------------------------
+
+aws cloudformation create-stack \
+  --stack-name aaEC2 \
+  --template-body file:///mnt/c/Users/waz/.aws/YAML/single-vpc-ec2-cfn.yaml

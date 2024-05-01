@@ -1,0 +1,13 @@
+{
+    "Version": "2012-10-17",
+    "Statement" : [
+    {
+        "Effect": "Allow",
+        "Principal" : { "AWS": "*" },
+        "Action" : "*",
+        "Resource" : [ "arn:aws:s3:::dream-bucket-01/*", "arn:aws:s3:::dream-bucket-02/CloudWatch-logs/*"],
+        "Condition": {
+            "StringEquals" : { "s3:DataAccessPointAccount" : "221603655552" }
+        }
+    }]
+}

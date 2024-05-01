@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: My CloudFormation Template
+Parameters:
+    InstanceType:
+        Type: String
+        Default: "t2.micro"
+        AllowedValues:
+            - t2.micro
+            - t2.small
+            - t2.medium
+        Description: Enter t2.micro, t2.small, or t2.medium. Default is t2.micro.
+    KeyName: dd-keypair-18022024
+        Type: AWS::EC2::KeyPair::dd-keypair-18022024
+    MyRDSInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+    DBName: MyRDSInstance
+    AllocatedStorage: '20'
+    DBInstanceClass: db.t2.micro
+    Engine: mariadb
+    MasterUsername: '{{resolve:secretsmanager:MyRDSSecret:SecretString:username}}'
+    MasterUserPassword: '{{resolve:secretsmanager:MyRDSSecret:SecretString:password}}'
+Resources:
+    dreamResource:
+    Type: AWS::EC2::Instance
+    SecurityGroups:
+    - dDream-sg
+    Properties:
+    InstanceType: ec2InstanceType
+    KeyName: dd-keypair-18022024
+    ImageId: ami-0d5d9d301c853a04a
+    UserData:
+        Fn::Base64: |
+        #!/bin/bash -xe
+        yum update -y
+        yum install -y httpd
+        systemctl start httpd
+        systemctl enable httpd
+        echo "<html><body><h1>Hello from AWS CloudFormation</h1></body></html>" > /var/www/html/index.html
+   
+Outputs:
+MyOutput:
+    Value: !Ref MyResource

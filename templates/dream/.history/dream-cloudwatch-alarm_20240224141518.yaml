@@ -1,0 +1,29 @@
+Type: AWS::CloudWatch::Alarm
+Metadata:
+    Intent: This alarm is used to detect the underlying problems with instances,
+        including both system status check failures and instance status check
+        failures.
+    ThresholdJustification: When a status check fails, the value of this metric is
+        1. The threshold is set so that whenever the status check fails, the
+        alarm is in ALARM state.
+Properties:
+    AlarmName: AWS/EC2 StatusCheckFailed InstanceId=i-0c61ec733d7d2451b
+    AlarmDescription: This alarm helps to monitor both system status checks and
+        instance status checks. If either type of status check fails, then this
+        alarm should be in ALARM state.
+    MetricName: StatusCheckFailed
+    Namespace: AWS/EC2
+    Statistic: Maximum
+    Dimensions:
+        - Name: InstanceId
+          Value: i-0c61ec733d7d2451b
+    Period: 300
+    EvaluationPeriods: 2
+    DatapointsToAlarm: 2
+    Threshold: 1
+    ComparisonOperator: GreaterThanOrEqualToThreshold
+    TreatMissingData: missing
+    ActionsEnabled: false
+    OKActions: []
+    AlarmActions: []
+    InsufficientDataActions: []

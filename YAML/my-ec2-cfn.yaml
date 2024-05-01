@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  aaEC2Resource:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: aa-keypair
+      SecurityGroups:
+           - !Ref "aaSecurityGroup"
+      UserData:
+      Fn::Base64:
+        Fn::Join:
+          - ":"
+          - - "PORT=80"
+            - "TOPIC="
+            - !Ref aaSNSTopic
+      InstanceType: t2.micro
+      AvailabilityZone: ap-southeast-2
+      ImageId: ami-04e1ec3aaf06b9060
+      Volumes:
+           - VolumeId: !Ref aaVolumeResource
+             Device: /dev/sdf
+      Tags:
+        - Key: Name
+          Value: aaEC2
+          
+  aaS3Resource:
+    Type: AWS::S3::AccessGrant
+Properties:
+  AccessGrantsLocationConfiguration: 
+    AccessGrantsLocationConfiguration
+  AccessGrantsLocationId: String
+  ApplicationArn: String
+  Grantee: 
+    Grantee
+  Permission: String
+  S3PrefixType: String
+  Tags: 
+    - Tag:

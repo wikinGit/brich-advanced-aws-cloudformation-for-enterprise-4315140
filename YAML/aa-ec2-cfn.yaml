@@ -1,0 +1,42 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This is a simple CloudFormation template to create aAnzac Air n EC2 instan for web sitece"
+Parameters:
+  Subnet: 
+    Type: AWS::EC2::Subnet::Id
+    Description: Location of the subnet
+  IamInstanceProfile:
+    Description: IAM Instance Profile - SSM name here
+    Type: String
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+  InstanceType:
+    Type: String 
+    Default: t3.micro
+    AllowedValues:
+      - t3.nano
+      - t3.micro
+      - t3.small
+      - m1.medium
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+          sudo yum update -y
+          sudo yum install -y httpd
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+          sudo echo "Hello World from $(hostname -f)" > /var/www/html/index.html 
+      ImageId: ami-04e1ec3aaf06b9060
+      InstanceType:
+        Ref: InstanceType
+      SecurityGroupIds:
+        - Ref: SecurityGroup
+      SubnetId:
+        Ref: Subnet
+      IamInstanceProfile:
+        Ref: IamInstanceProfile

@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: A simple EC2 instance
+Resources:
+  MyEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-04e1ec3aaf06b9060
+      InstanceType: t2.micro

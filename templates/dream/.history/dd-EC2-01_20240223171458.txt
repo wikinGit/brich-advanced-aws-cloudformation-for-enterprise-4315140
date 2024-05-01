@@ -1,0 +1,18 @@
+ dd-EC2-01 
+ i-0fdcb15c5a3c08e4d
+ 172.31.42.80
+ ip-172-31-42-80.ap-southeast-2.compute.internal
+ vpc-0bed63c7e20497712
+ subnet-00539bef2add45376
+ ami-02eec49345a878486 - al2023-ami-2023.3.20240205.2-kernel-6.1-x86_64
+ dd-keypair-18022024 - ID: 221603655552
+Reservation: r-0148e715232f8f7f8
+ sg-0a4866115a70d7ab3
+ vol-063bc7c53fa7d1d9c
+ arn:aws:sso:::instance/ssoins-8259787f8653c6d2
+ Organization ID: o-s9vrjkx6bk
+ https://d-9767415cca.awsapps.com/start
+arn:aws:iam::221603655552:group/WazAdminZ
+
+ dreambucket
+ arn:aws:iam::221603655552:policy/dreambucket-s3-policy
